@@ -41,11 +41,17 @@ async function registrarse(e) {
   const password = document.getElementById('reg-password').value;
   const rol = document.getElementById('reg-rol').value;
   const cuenta = document.getElementById('reg-cuenta').value;
+  const grado = document.getElementById('reg-grado').value;
   const errorEl = document.getElementById('reg-error');
   const exitoEl = document.getElementById('reg-exito');
 
   errorEl.textContent = '';
   exitoEl.textContent = '';
+
+  if (rol === 'estudiante' && !grado) {
+    errorEl.textContent = 'Selecciona tu grado.';
+    return;
+  }
 
   const { data, error } = await supabase.auth.signUp({ email, password });
 
@@ -59,7 +65,8 @@ async function registrarse(e) {
     nombre,
     email,
     rol,
-    numero_cuenta: cuenta
+    numero_cuenta: cuenta,
+    grado: rol === 'estudiante' ? grado : null
   });
 
   if (perfilError) {
