@@ -60,13 +60,26 @@
           <span class="toggle-password" onclick="togglePassword('reg-password', this)">◎</span>
         </div>
       </div>
-      <div class="campo">
-        <label>Soy...</label>
-        <select id="reg-rol">
-          <option value="estudiante">Estudiante</option>
-          <option value="profesor">Profesor</option>
-        </select>
-      </div>
+     <div class="campo">
+  <label>Soy...</label>
+  <select id="reg-rol" onchange="toggleCampoGrado()">
+    <option value="estudiante">Estudiante</option>
+    <option value="profesor">Profesor</option>
+  </select>
+</div>
+<div class="campo" id="campo-grado">
+  <label>Grado</label>
+  <select id="reg-grado">
+    <option value="">Selecciona tu grado</option>
+    <option value="10º 1">10º 1</option>
+    <option value="10º 2">10º 2</option>
+    <option value="10º 3">10º 3</option>
+    <option value="10º 4">10º 4</option>
+    <option value="Bachillerato en Informática BTPI">Bachillerato en Informática BTPI</option>
+    <option value="Bachillerato en Informática BTPI">Bachillerato en Contaduria y Finanzas BTPC&F</option>
+    <option value="Bachillerato en Informática BTPI">Bachillerato en Ciencias y Humanidades BCH</option>
+  </select>
+</div>
       <button type="submit" class="btn-principal">Crear cuenta</button>
       <p id="reg-error" class="mensaje-error"></p>
       <p id="reg-exito" class="mensaje-exito"></p>
