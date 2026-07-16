@@ -2,15 +2,16 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/logo.png">
-<meta name="theme-color" content="#1a3c6e">
+  <link rel="apple-touch-icon" href="img/Logo.jpeg">
+  <meta name="theme-color" content="#122D52">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Campus Virtual - Administrador</title>
   <link rel="stylesheet" href="css/estilos.css"/>
 </head>
 <body>
-<div class="sidebar">
+<div class="dashboard">
+  <div class="sidebar">
     <div class="sidebar-logo">
       <img src="img/logoo.jpeg" alt="PANB"/>
     </div>
@@ -18,36 +19,58 @@
     <div class="sidebar-slogan">Formando futuro y conocimiento</div>
     <hr class="sidebar-divisor"/>
     <div class="usuario-nombre" id="nombre-usuario">Cargando...</div>
-    <div class="nav-item activo" onclick="mostrarSeccion('resumen')">📊 Resumen </div>
-    <div class="nav-item" onclick="mostrarSeccion('usuarios')">👥 Usuarios </div>
-    <div class="nav-item" onclick="mostrarSeccion('secciones')">📚 Secciones </div>
-    <div class="nav-item" onclick="mostrarSeccion('crear-usuario')">➕ Crear Usuario </div>
-    <div class="cerrar-sesion" onclick="cerrarSesion()">🚪 Cerrar sesión </div>
-</div>
+    <div class="nav-item activo" onclick="mostrarSeccion('resumen')">📊 Resumen</div>
+    <div class="nav-item" onclick="mostrarSeccion('usuarios')">👥 Usuarios</div>
+    <div class="nav-item" onclick="mostrarSeccion('secciones')">📚 Secciones</div>
+    <div class="nav-item" onclick="mostrarSeccion('crear-usuario')">➕ Crear Usuario</div>
+    <div class="cerrar-sesion" onclick="cerrarSesion()">🚪 Cerrar sesión</div>
+  </div>
 
   <div class="contenido-principal">
 
     <!-- Resumen -->
     <div id="seccion-resumen">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Panel de Administración</h2>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-bottom:24px;">
-        <div class="tarjeta" style="text-align:center;">
-          <div style="font-size:2.2rem; font-weight:700; color:#1a3c6e;" id="total-estudiantes">—</div>
-          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Estudiantes</div>
+      <div class="topbar-bienvenida">
+        <div>
+          <h2 id="titulo-bienvenida">Panel de Administración 👋</h2>
+          <p>Resumen general de la plataforma y actividad reciente.</p>
         </div>
-        <div class="tarjeta" style="text-align:center;">
-          <div style="font-size:2.2rem; font-weight:700; color:#2d6cb4;" id="total-profesores">—</div>
-          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Profesores</div>
-        </div>
-        <div class="tarjeta" style="text-align:center;">
-          <div style="font-size:2.2rem; font-weight:700; color:#38a169;" id="total-secciones">—</div>
-          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Secciones</div>
-        </div>
-        <div class="tarjeta" style="text-align:center;">
-          <div style="font-size:2.2rem; font-weight:700; color:#d69e2e;" id="total-tareas">—</div>
-          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Tareas publicadas</div>
+        <div class="buscador-top">
+          🔍 <input type="text" placeholder="Buscar en el sistema..."/>
         </div>
       </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icono azul">🎓</div>
+          <div>
+            <div class="stat-valor" id="total-estudiantes">—</div>
+            <div class="stat-label">Estudiantes</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icono celeste">👨‍🏫</div>
+          <div>
+            <div class="stat-valor" id="total-profesores">—</div>
+            <div class="stat-label">Profesores</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icono plata">📚</div>
+          <div>
+            <div class="stat-valor" id="total-secciones">—</div>
+            <div class="stat-label">Secciones</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icono azul">📝</div>
+          <div>
+            <div class="stat-valor" id="total-tareas">—</div>
+            <div class="stat-label">Tareas publicadas</div>
+          </div>
+        </div>
+      </div>
+
       <div class="tarjeta">
         <h3>Actividad reciente — Últimos registros</h3>
         <div id="actividad-reciente" style="margin-top:12px;"></div>
@@ -56,14 +79,14 @@
 
     <!-- Usuarios -->
     <div id="seccion-usuarios" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Gestión de Usuarios</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Gestión de Usuarios</h2>
       <div class="tarjeta" style="margin-bottom:16px;">
         <div style="display:flex; gap:10px; align-items:center;">
           <input type="text" id="buscar-usuario" placeholder="Buscar por nombre o correo..."
             oninput="filtrarUsuarios()"
-            style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; flex:1;"/>
+            style="padding:10px 14px; border:1.5px solid #e4e9ef; border-radius:10px; font-size:0.9rem; flex:1;"/>
           <select id="filtro-rol" onchange="filtrarUsuarios()"
-            style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;">
+            style="padding:10px 14px; border:1.5px solid #e4e9ef; border-radius:10px; font-size:0.9rem;">
             <option value="">Todos los roles</option>
             <option value="estudiante">Estudiantes</option>
             <option value="profesor">Profesores</option>
@@ -76,13 +99,13 @@
 
     <!-- Secciones -->
     <div id="seccion-secciones" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Todas las Secciones</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Todas las Secciones</h2>
       <div id="lista-secciones-admin"></div>
     </div>
 
     <!-- Crear Usuario -->
     <div id="seccion-crear-usuario" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Crear Usuario Manualmente</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Crear Usuario Manualmente</h2>
       <div class="tarjeta" style="max-width:500px;">
         <div class="campo">
           <label>Nombre completo</label>
