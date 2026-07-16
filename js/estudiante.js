@@ -76,8 +76,14 @@ async function inscribirse() {
   const msg = document.getElementById('msg-inscripcion');
   if (!codigo) return;
 
-  const { data: seccion } = await supabase.from('secciones').select('id, nombre').eq('codigo', codigo).single();
+  const { data: seccion } = await supabase.from('secciones').select('id, nombre, grado').eq('codigo', codigo).single();
   if (!seccion) { msg.style.color = '#c0392b'; msg.textContent = 'Código no encontrado.'; return; }
+
+  if (seccion.grado !== usuarioActual.grado) {
+    msg.style.color = '#c0392b';
+    msg.textContent = `Esta clase es para ${seccion.grado}. Tú estás en ${usuarioActual.grado}.`;
+    return;
+  }
 
   const { error } = await supabase.from('inscripciones').insert({ estudiante_id: usuarioActual.id, seccion_id: seccion.id });
   if (error) { msg.style.color = '#c0392b'; msg.textContent = 'Ya estás inscrito o ocurrió un error.'; return; }
@@ -85,6 +91,8 @@ async function inscribirse() {
   msg.style.color = '#27ae60';
   msg.textContent = `¡Inscrito en ${seccion.nombre}!`;
   document.getElementById('codigo-seccion').value = '';
+  cargarClases();
+}.value = '';
   cargarClases();
 }
 
