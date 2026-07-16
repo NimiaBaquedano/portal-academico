@@ -2,15 +2,16 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/logo.png">
-<meta name="theme-color" content="#1a3c6e">
+  <link rel="apple-touch-icon" href="img/Logo.jpeg">
+  <meta name="theme-color" content="#122D52">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Campus Virtual - Profesor</title>
   <link rel="stylesheet" href="css/estilos.css"/>
 </head>
 <body>
-<div class="sidebar">
+<div class="dashboard">
+  <div class="sidebar">
     <div class="sidebar-logo">
       <img src="img/logoo.jpeg" alt="PANB"/>
     </div>
@@ -24,13 +25,46 @@
     <div class="nav-item" onclick="mostrarSeccion('calificaciones')">⭐ Calificaciones</div>
     <div class="nav-item" onclick="mostrarSeccion('estudiantes')">👥 Estudiantes</div>
     <div class="cerrar-sesion" onclick="cerrarSesion()">🚪 Cerrar sesión</div>
-</div>
+  </div>
 
   <div class="contenido-principal">
 
     <!-- Mis Secciones -->
     <div id="seccion-mis-secciones">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Mis Secciones</h2>
+      <div class="topbar-bienvenida">
+        <div>
+          <h2 id="titulo-bienvenida">¡Bienvenido/a! 👋</h2>
+          <p>Gestiona tus secciones, tareas y materiales desde aquí.</p>
+        </div>
+        <div class="buscador-top">
+          🔍 <input type="text" placeholder="Buscar secciones..."/>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icono azul">📚</div>
+          <div>
+            <div class="stat-valor" id="stat-secciones">0</div>
+            <div class="stat-label">Secciones activas</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icono celeste">📝</div>
+          <div>
+            <div class="stat-valor" id="stat-tareas-prof">0</div>
+            <div class="stat-label">Tareas publicadas</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icono plata">👥</div>
+          <div>
+            <div class="stat-valor" id="stat-estudiantes-prof">0</div>
+            <div class="stat-label">Estudiantes totales</div>
+          </div>
+        </div>
+      </div>
+
       <div class="tarjeta">
         <h3>Crear nueva sección</h3>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
@@ -54,12 +88,14 @@
         <button class="btn btn-verde" onclick="crearSeccion()">+ Crear Sección</button>
         <p id="msg-seccion" style="margin-top:10px; font-size:0.85rem;"></p>
       </div>
-      <div id="lista-secciones"></div>
+
+      <h3 style="margin:24px 0 14px; color:var(--azul-marino);">Mis Secciones</h3>
+      <div class="cursos-grid" id="lista-secciones"></div>
     </div>
 
     <!-- Tareas -->
     <div id="seccion-tareas" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Gestionar Tareas</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Gestionar Tareas</h2>
       <div class="tarjeta">
         <h3>Publicar nueva tarea</h3>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
@@ -83,7 +119,7 @@
         <div class="campo">
           <label>Descripción / Instrucciones</label>
           <textarea id="tarea-descripcion" rows="3"
-            style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;"
+            style="width:100%; padding:10px; border:1.5px solid #e4e9ef; border-radius:10px; font-size:0.9rem;"
             placeholder="Instrucciones detalladas de la tarea..."></textarea>
         </div>
         <button class="btn btn-verde" onclick="crearTarea()">+ Publicar Tarea</button>
@@ -94,7 +130,7 @@
 
     <!-- Materiales -->
     <div id="seccion-materiales" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Materiales</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Materiales</h2>
       <div class="tarjeta">
         <h3>Subir nuevo material</h3>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
@@ -123,20 +159,20 @@
 
     <!-- Calificaciones -->
     <div id="seccion-calificaciones" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Calificaciones</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Calificaciones</h2>
       <div class="tarjeta">
-        <label style="font-weight:600;">Seleccionar tarea para calificar:</label>
-        <select id="select-tarea-calif" onchange="cargarEntregas()" style="margin-top:8px; padding:10px; border:1px solid #ddd; border-radius:8px; width:100%; font-size:0.95rem;"></select>
+        <label style="font-weight:600; color:var(--plata); font-size:0.85rem; text-transform:uppercase;">Seleccionar tarea para calificar:</label>
+        <select id="select-tarea-calif" onchange="cargarEntregas()" style="margin-top:8px; padding:10px; border:1.5px solid #e4e9ef; border-radius:10px; width:100%; font-size:0.95rem;"></select>
       </div>
       <div id="lista-entregas"></div>
     </div>
 
     <!-- Estudiantes -->
     <div id="seccion-estudiantes" style="display:none">
-      <h2 style="margin-bottom:20px; color:#1a3c6e;">Estudiantes por Clase</h2>
+      <h2 style="margin-bottom:20px; color:var(--azul-marino);">Estudiantes por Clase</h2>
       <div class="tarjeta">
-        <label style="font-weight:600;">Seleccionar clase:</label>
-        <select id="select-seccion-est" onchange="cargarEstudiantes()" style="margin-top:8px; padding:10px; border:1px solid #ddd; border-radius:8px; width:100%; font-size:0.95rem;"></select>
+        <label style="font-weight:600; color:var(--plata); font-size:0.85rem; text-transform:uppercase;">Seleccionar clase:</label>
+        <select id="select-seccion-est" onchange="cargarEstudiantes()" style="margin-top:8px; padding:10px; border:1.5px solid #e4e9ef; border-radius:10px; width:100%; font-size:0.95rem;"></select>
       </div>
       <div id="lista-estudiantes"></div>
     </div>
