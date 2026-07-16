@@ -80,3 +80,8 @@ function togglePassword(inputId, icono) {
     icono.textContent = '◎';
   }
 }
+
+function toggleCampoGrado() {
+  const rol = document.getElementById('reg-rol').value;
+  document.getElementById('campo-grado').style.display = rol === 'estudiante' ? 'block' : 'none';
+}
