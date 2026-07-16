@@ -1,6 +1,6 @@
 {
-  "name": "Campus Virtual",
-  "short_name": "Campus",
+  "name": "Portal Académico",
+  "short_name": "PANB",
   "start_url": "/campus-virtual/",
   "display": "standalone",
   "background_color": "#1a3c6e",
