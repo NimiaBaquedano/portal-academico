@@ -69,6 +69,7 @@ async function registrarse(e) {
 
   exitoEl.textContent = '¡Cuenta creada! Ya puedes iniciar sesión.';
 }
+
 function togglePassword(inputId, icono) {
   const input = document.getElementById(inputId);
   if (input.type === 'password') {
@@ -77,5 +78,7 @@ function togglePassword(inputId, icono) {
   } else {
     input.type = 'password';
     icono.textContent = '◎';
+  }
+}
   }
 }
