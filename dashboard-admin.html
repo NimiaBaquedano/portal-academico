@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Virtual - Administrador</title>
+  <link rel="stylesheet" href="css/estilos.css"/>
+</head>
+<body>
+<div class="dashboard">
+  <div class="sidebar">
+    <h2>🎓 Campus Virtual</h2>
+    <div class="usuario-nombre" id="nombre-usuario">Cargando...</div>
+    <div class="nav-item activo" onclick="mostrarSeccion('resumen')">📊 Resumen</div>
+    <div class="nav-item" onclick="mostrarSeccion('usuarios')">👥 Usuarios</div>
+    <div class="nav-item" onclick="mostrarSeccion('secciones')">📚 Secciones</div>
+    <div class="nav-item" onclick="mostrarSeccion('crear-usuario')">➕ Crear Usuario</div>
+    <div class="cerrar-sesion" onclick="cerrarSesion()">🚪 Cerrar sesión</div>
+  </div>
+
+  <div class="contenido-principal">
+
+    <!-- Resumen -->
+    <div id="seccion-resumen">
+      <h2 style="margin-bottom:20px; color:#1a3c6e;">Panel de Administración</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-bottom:24px;">
+        <div class="tarjeta" style="text-align:center;">
+          <div style="font-size:2.2rem; font-weight:700; color:#1a3c6e;" id="total-estudiantes">—</div>
+          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Estudiantes</div>
+        </div>
+        <div class="tarjeta" style="text-align:center;">
+          <div style="font-size:2.2rem; font-weight:700; color:#2d6cb4;" id="total-profesores">—</div>
+          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Profesores</div>
+        </div>
+        <div class="tarjeta" style="text-align:center;">
+          <div style="font-size:2.2rem; font-weight:700; color:#38a169;" id="total-secciones">—</div>
+          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Secciones</div>
+        </div>
+        <div class="tarjeta" style="text-align:center;">
+          <div style="font-size:2.2rem; font-weight:700; color:#d69e2e;" id="total-tareas">—</div>
+          <div style="color:#888; font-size:0.9rem; margin-top:4px;">Tareas publicadas</div>
+        </div>
+      </div>
+      <div class="tarjeta">
+        <h3>Actividad reciente — Últimos registros</h3>
+        <div id="actividad-reciente" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Usuarios -->
+    <div id="seccion-usuarios" style="display:none">
+      <h2 style="margin-bottom:20px; color:#1a3c6e;">Gestión de Usuarios</h2>
+      <div class="tarjeta" style="margin-bottom:16px;">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <input type="text" id="buscar-usuario" placeholder="Buscar por nombre o correo..."
+            oninput="filtrarUsuarios()"
+            style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; flex:1;"/>
+          <select id="filtro-rol" onchange="filtrarUsuarios()"
+            style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;">
+            <option value="">Todos los roles</option>
+            <option value="estudiante">Estudiantes</option>
+            <option value="profesor">Profesores</option>
+            <option value="admin">Admins</option>
+          </select>
+        </div>
+      </div>
+      <div id="lista-usuarios"></div>
+    </div>
+
+    <!-- Secciones -->
+    <div id="seccion-secciones" style="display:none">
+      <h2 style="margin-bottom:20px; color:#1a3c6e;">Todas las Secciones</h2>
+      <div id="lista-secciones-admin"></div>
+    </div>
+
+    <!-- Crear Usuario -->
+    <div id="seccion-crear-usuario" style="display:none">
+      <h2 style="margin-bottom:20px; color:#1a3c6e;">Crear Usuario Manualmente</h2>
+      <div class="tarjeta" style="max-width:500px;">
+        <div class="campo">
+          <label>Nombre completo</label>
+          <input type="text" id="cu-nombre" placeholder="Nombre completo"/>
+        </div>
+        <div class="campo">
+          <label>Correo electrónico</label>
+          <input type="email" id="cu-email" placeholder="correo@ejemplo.com"/>
+        </div>
+        <div class="campo">
+          <label>Contraseña temporal</label>
+          <input type="password" id="cu-password" placeholder="Mínimo 6 caracteres"/>
+        </div>
+        <div class="campo">
+          <label>Número de cuenta (opcional)</label>
+          <input type="text" id="cu-cuenta" placeholder="Ej: 20231234"/>
+        </div>
+        <div class="campo">
+          <label>Rol</label>
+          <select id="cu-rol">
+            <option value="estudiante">Estudiante</option>
+            <option value="profesor">Profesor</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <button class="btn btn-verde" onclick="crearUsuario()">+ Crear Usuario</button>
+        <p id="msg-crear-usuario" style="margin-top:10px; font-size:0.85rem;"></p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
