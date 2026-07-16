@@ -179,13 +179,35 @@ async function crearUsuario() {
   const password = document.getElementById('cu-password').value;
   const cuenta = document.getElementById('cu-cuenta').value.trim();
   const rol = document.getElementById('cu-rol').value;
+  const grado = document.getElementById('cu-grado').value;
   const msg = document.getElementById('msg-crear-usuario');
 
   if (!nombre || !email || !password) {
-    msg.style.color = '#e53e3e';
+    msg.style.color = '#c0392b';
     msg.textContent = 'Nombre, correo y contraseña son obligatorios.';
     return;
   }
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) { msg.style.color = '#c0392b'; msg.textContent = 'Error: ' + error.message; return; }
+
+  const { error: perfilError } = await supabase.from('perfiles').insert({
+    id: data.user.id,
+    nombre, email, rol,
+    numero_cuenta: cuenta || null,
+    grado: rol === 'estudiante' ? (grado || null) : null
+  });
+
+  if (perfilError) { msg.style.color = '#c0392b'; msg.textContent = 'Error al crear perfil: ' + perfilError.message; return; }
+
+  msg.style.color = '#27ae60';
+  msg.textContent = `¡Usuario "${nombre}" creado como ${rol}!`;
+  document.getElementById('cu-nombre').value = '';
+  document.getElementById('cu-email').value = '';
+  document.getElementById('cu-password').value = '';
+  document.getElementById('cu-cuenta').value = '';
+  document.getElementById('cu-grado').value = '';
+}
 
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) { msg.style.color = '#e53e3e'; msg.textContent = 'Error: ' + error.message; return; }
