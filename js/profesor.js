@@ -10,6 +10,7 @@ async function init() {
 
   usuarioActual = perfil;
   document.getElementById('nombre-usuario').textContent = perfil.nombre;
+  document.getElementById('titulo-bienvenida').textContent = `¡Bienvenido/a, ${perfil.nombre.split(' ')[0]}! 👋`;
   cargarSecciones();
 }
 
@@ -21,7 +22,7 @@ function mostrarSeccion(nombre) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('activo'));
   event.target.classList.add('activo');
 
-  if (nombre === 'tareas') cargarSelectSecciones('tarea-seccion');
+  if (nombre === 'tareas') { cargarSelectSecciones('tarea-seccion'); cargarTareasProfesor(); }
   if (nombre === 'materiales') { cargarSelectSecciones('mat-seccion'); cargarMateriales(); }
   if (nombre === 'calificaciones') cargarSelectTareasCalif();
   if (nombre === 'estudiantes') cargarSelectSecciones('select-seccion-est');
@@ -35,26 +36,41 @@ async function cargarSecciones() {
     .order('created_at', { ascending: false });
 
   misSeccionesCache = data || [];
+  document.getElementById('stat-secciones').textContent = misSeccionesCache.length;
+
   const contenedor = document.getElementById('lista-secciones');
 
   if (!data || data.length === 0) {
-    contenedor.innerHTML = '<div class="tarjeta"><p style="color:#888;">Aún no has creado ninguna sección.</p></div>';
-    return;
+    contenedor.innerHTML = '<div class="tarjeta"><p style="color:var(--plata);">Aún no has creado ninguna sección.</p></div>';
+  } else {
+    contenedor.innerHTML = data.map(s => `
+      <div class="curso-card">
+        <div class="curso-banner">
+          <span class="curso-etiqueta">${s.codigo}</span>
+        </div>
+        <div class="curso-body">
+          <h4>${s.nombre}</h4>
+          <div class="curso-meta">${s.periodo}</div>
+          <p style="font-size:0.85rem; color:var(--plata); margin-bottom:12px;">${s.descripcion || ''}</p>
+          <p style="font-size:0.78rem; color:var(--plata);">📋 Código para compartir: <strong style="color:var(--azul-marino);">${s.codigo}</strong></p>
+        </div>
+      </div>
+    `).join('');
   }
 
-  contenedor.innerHTML = data.map(s => `
-    <div class="tarjeta">
-      <div style="display:flex; justify-content:space-between; align-items:start;">
-        <div>
-          <h3>${s.nombre}</h3>
-          <p style="color:#888; font-size:0.85rem; margin-top:4px;">Código: <strong style="color:#1a3c6e; font-size:1rem;">${s.codigo}</strong> · Periodo: ${s.periodo}</p>
-          <p style="margin-top:6px; font-size:0.9rem;">${s.descripcion || ''}</p>
-        </div>
-        <span class="badge badge-verde">Activa</span>
-      </div>
-      <p style="margin-top:12px; font-size:0.82rem; color:#888;">📋 Comparte el código <strong>${s.codigo}</strong> con tus estudiantes para que se inscriban.</p>
-    </div>
-  `).join('');
+  // Estadísticas: total de tareas y estudiantes
+  const ids = misSeccionesCache.map(s => s.id);
+  if (ids.length > 0) {
+    const { count: tareasCount } = await supabase.from('tareas').select('*', { count: 'exact', head: true }).in('seccion_id', ids);
+    document.getElementById('stat-tareas-prof').textContent = tareasCount ?? 0;
+
+    const { data: inscripciones } = await supabase.from('inscripciones').select('estudiante_id').in('seccion_id', ids);
+    const unicos = new Set((inscripciones || []).map(i => i.estudiante_id));
+    document.getElementById('stat-estudiantes-prof').textContent = unicos.size;
+  } else {
+    document.getElementById('stat-tareas-prof').textContent = 0;
+    document.getElementById('stat-estudiantes-prof').textContent = 0;
+  }
 }
 
 async function crearSeccion() {
@@ -65,7 +81,7 @@ async function crearSeccion() {
   const msg = document.getElementById('msg-seccion');
 
   if (!nombre || !codigo || !periodo) {
-    msg.style.color = '#e53e3e';
+    msg.style.color = '#c0392b';
     msg.textContent = 'Nombre, código y periodo son obligatorios.';
     return;
   }
@@ -76,12 +92,12 @@ async function crearSeccion() {
   });
 
   if (error) {
-    msg.style.color = '#e53e3e';
+    msg.style.color = '#c0392b';
     msg.textContent = error.message.includes('unique') ? 'Ese código ya existe, usa uno diferente.' : 'Error al crear la sección.';
     return;
   }
 
-  msg.style.color = '#38a169';
+  msg.style.color = '#27ae60';
   msg.textContent = '¡Sección creada con éxito!';
   document.getElementById('nueva-nombre').value = '';
   document.getElementById('nueva-codigo').value = '';
@@ -109,7 +125,7 @@ async function crearTarea() {
   const msg = document.getElementById('msg-tarea');
 
   if (!seccion_id || !titulo) {
-    msg.style.color = '#e53e3e';
+    msg.style.color = '#c0392b';
     msg.textContent = 'La clase y el título son obligatorios.';
     return;
   }
@@ -120,9 +136,9 @@ async function crearTarea() {
     puntos: isNaN(puntos) ? 100 : puntos
   });
 
-  if (error) { msg.style.color = '#e53e3e'; msg.textContent = 'Error al publicar la tarea.'; return; }
+  if (error) { msg.style.color = '#c0392b'; msg.textContent = 'Error al publicar la tarea.'; return; }
 
-  msg.style.color = '#38a169';
+  msg.style.color = '#27ae60';
   msg.textContent = '¡Tarea publicada!';
   document.getElementById('tarea-titulo').value = '';
   document.getElementById('tarea-descripcion').value = '';
@@ -138,7 +154,7 @@ async function cargarTareasProfesor() {
   const contenedor = document.getElementById('lista-tareas-prof');
 
   if (!data || data.length === 0) {
-    contenedor.innerHTML = '<div class="tarjeta"><p style="color:#888;">No has publicado tareas aún.</p></div>';
+    contenedor.innerHTML = '<div class="tarjeta"><p style="color:var(--plata);">No has publicado tareas aún.</p></div>';
     return;
   }
 
@@ -147,7 +163,7 @@ async function cargarTareasProfesor() {
       <div style="display:flex; justify-content:space-between;">
         <div>
           <h3>${t.titulo}</h3>
-          <p style="color:#888; font-size:0.85rem;">Clase: ${t.secciones.nombre} · Puntos: ${t.puntos}</p>
+          <p style="color:var(--plata); font-size:0.85rem;">Clase: ${t.secciones.nombre} · Puntos: ${t.puntos}</p>
           ${t.fecha_limite ? `<p style="font-size:0.85rem; margin-top:4px;">📅 Vence: ${new Date(t.fecha_limite).toLocaleDateString('es-HN', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</p>` : ''}
           <p style="margin-top:8px; font-size:0.9rem;">${t.descripcion || ''}</p>
         </div>
@@ -164,19 +180,19 @@ async function subirMaterial() {
   const msg = document.getElementById('msg-material');
 
   if (!seccion_id || !titulo || !archivo) {
-    msg.style.color = '#e53e3e';
+    msg.style.color = '#c0392b';
     msg.textContent = 'Clase, título y archivo son obligatorios.';
     return;
   }
 
-  msg.style.color = '#555';
+  msg.style.color = '#6d7988';
   msg.textContent = 'Subiendo archivo...';
 
   const ext = archivo.name.split('.').pop();
   const ruta = `documentos/${seccion_id}/${Date.now()}.${ext}`;
   const { error: uploadError } = await supabase.storage.from('documentos').upload(ruta, archivo);
 
-  if (uploadError) { msg.style.color = '#e53e3e'; msg.textContent = 'Error al subir el archivo.'; return; }
+  if (uploadError) { msg.style.color = '#c0392b'; msg.textContent = 'Error al subir el archivo.'; return; }
 
   const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(ruta);
 
@@ -186,9 +202,9 @@ async function subirMaterial() {
     subido_por: usuarioActual.id
   });
 
-  if (error) { msg.style.color = '#e53e3e'; msg.textContent = 'Error al registrar el documento.'; return; }
+  if (error) { msg.style.color = '#c0392b'; msg.textContent = 'Error al registrar el documento.'; return; }
 
-  msg.style.color = '#38a169';
+  msg.style.color = '#27ae60';
   msg.textContent = '¡Material subido con éxito!';
   document.getElementById('mat-titulo').value = '';
   document.getElementById('mat-descripcion').value = '';
@@ -204,7 +220,7 @@ async function cargarMateriales() {
   const contenedor = document.getElementById('lista-materiales-prof');
 
   if (!data || data.length === 0) {
-    contenedor.innerHTML = '<div class="tarjeta"><p style="color:#888;">No has subido materiales aún.</p></div>';
+    contenedor.innerHTML = '<div class="tarjeta"><p style="color:var(--plata);">No has subido materiales aún.</p></div>';
     return;
   }
 
@@ -215,10 +231,10 @@ async function cargarMateriales() {
         <tbody>
           ${data.map(d => `
             <tr>
-              <td>${d.titulo}<br/><small style="color:#888;">${d.descripcion || ''}</small></td>
+              <td>${d.titulo}<br/><small style="color:var(--plata);">${d.descripcion || ''}</small></td>
               <td>${d.secciones.nombre}</td>
               <td>${new Date(d.created_at).toLocaleDateString('es-HN')}</td>
-              <td><a href="${d.archivo_url}" target="_blank" class="btn btn-azul" style="text-decoration:none; font-size:0.8rem;">⬇ Ver</a></td>
+              <td><a href="${d.archivo_url}" target="_blank" class="btn btn-celeste" style="text-decoration:none; font-size:0.8rem;">⬇ Ver</a></td>
             </tr>
           `).join('')}
         </tbody>
@@ -252,7 +268,7 @@ async function cargarEntregas() {
 
   const contenedor = document.getElementById('lista-entregas');
   if (!data || data.length === 0) {
-    contenedor.innerHTML = '<div class="tarjeta"><p style="color:#888;">Ningún estudiante ha entregado esta tarea aún.</p></div>';
+    contenedor.innerHTML = '<div class="tarjeta"><p style="color:var(--plata);">Ningún estudiante ha entregado esta tarea aún.</p></div>';
     return;
   }
 
@@ -266,9 +282,9 @@ async function cargarEntregas() {
               <td>${e.perfiles.nombre}</td>
               <td>${e.perfiles.numero_cuenta || '—'}</td>
               <td>${new Date(e.entregado_at).toLocaleDateString('es-HN')}</td>
-              <td>${e.archivo_url ? `<a href="${e.archivo_url}" target="_blank" class="btn btn-azul" style="text-decoration:none; font-size:0.8rem;">Ver</a>` : '—'}</td>
+              <td>${e.archivo_url ? `<a href="${e.archivo_url}" target="_blank" class="btn btn-celeste" style="text-decoration:none; font-size:0.8rem;">Ver</a>` : '—'}</td>
               <td><input type="number" id="cal-${e.id}" value="${e.calificacion ?? ''}" min="0" max="100"
-                style="width:70px; padding:6px; border:1px solid #ddd; border-radius:6px;"/></td>
+                style="width:70px; padding:6px; border:1.5px solid #e4e9ef; border-radius:8px;"/></td>
               <td><button class="btn btn-verde" style="font-size:0.8rem;" onclick="guardarCalificacion('${e.id}')">Guardar</button></td>
             </tr>
           `).join('')}
@@ -301,13 +317,13 @@ async function cargarEstudiantes() {
 
   const contenedor = document.getElementById('lista-estudiantes');
   if (!data || data.length === 0) {
-    contenedor.innerHTML = '<div class="tarjeta"><p style="color:#888;">Ningún estudiante inscrito en esta clase aún.</p></div>';
+    contenedor.innerHTML = '<div class="tarjeta"><p style="color:var(--plata);">Ningún estudiante inscrito en esta clase aún.</p></div>';
     return;
   }
 
   contenedor.innerHTML = `
     <div class="tarjeta">
-      <p style="margin-bottom:12px; color:#555;">${data.length} estudiante(s) inscritos</p>
+      <p style="margin-bottom:12px; color:var(--plata);">${data.length} estudiante(s) inscritos</p>
       <table>
         <thead><tr><th>#</th><th>Nombre</th><th>Correo</th><th>Número de Cuenta</th></tr></thead>
         <tbody>
