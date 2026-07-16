@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/logo.png">
-<meta name="theme-color" content="#1a3c6e">
+  <link rel="apple-touch-icon" href="img/logo.jpg">
+  <meta name="theme-color" content="#1a3c6e">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Campus Virtual</title>
@@ -12,8 +12,8 @@
 <body class="pagina-login">
   <div class="login-container">
     <div class="login-logo">
-      <img src="img/logo.jpg (1).jpeg" alt="Logo" style="width:140px; height:140px; object-fit:contain; margin-bottom:8px;"/>
-<h1>Plataforma Virtual</h1>
+      <img src="img/logo.jpg" alt="Logo" style="width:140px; height:140px; object-fit:contain; margin-bottom:8px;"/>
+      <h1>Plataforma Virtual</h1>
       <p>Plataforma Educativa</p>
     </div>
 
@@ -28,14 +28,13 @@
         <label>Correo electrónico</label>
         <input type="email" id="login-email" required placeholder="correo@ejemplo.com"/>
       </div>
-     <div class="campo">
-  <label>Contraseña</label>
-  <div class="campo-password">
-    <input type="password" id="login-password" required placeholder="••••••••"/>
-    <span class="toggle-password" onclick="togglePassword('login-password', this)">◎</span>
-  </div>
-</div>
-</div>
+      <div class="campo">
+        <label>Contraseña</label>
+        <div class="campo-password">
+          <input type="password" id="login-password" required placeholder="••••••••"/>
+          <span class="toggle-password" onclick="togglePassword('login-password', this)">◎</span>
+        </div>
+      </div>
       <button type="submit" class="btn-principal">Entrar</button>
       <p id="login-error" class="mensaje-error"></p>
     </form>
@@ -54,13 +53,13 @@
         <label>Número de cuenta</label>
         <input type="text" id="reg-cuenta" placeholder="Ej: 20231234"/>
       </div>
-     <div class="campo">
-  <label>Contraseña</label>
-  <div class="campo-password">
-    <input type="password" id="reg-password" required placeholder="Mínimo 6 caracteres"/>
-    <span class="toggle-password" onclick="togglePassword('reg-password', this)">◎</span>
-  </div>
-</div>
+      <div class="campo">
+        <label>Contraseña</label>
+        <div class="campo-password">
+          <input type="password" id="reg-password" required placeholder="Mínimo 6 caracteres"/>
+          <span class="toggle-password" onclick="togglePassword('reg-password', this)">◎</span>
+        </div>
+      </div>
       <div class="campo">
         <label>Soy...</label>
         <select id="reg-rol">
