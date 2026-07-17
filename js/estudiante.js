@@ -2,6 +2,10 @@ let usuarioActual = null;
 let tareaSeleccionada = null;
 let mesCalendario = new Date();
 
+function normalizarTexto(texto) {
+  return (texto || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
 async function init() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) { window.location.href = 'index.html'; return; }
@@ -80,7 +84,7 @@ async function inscribirse() {
   const { data: seccion } = await supabase.from('secciones').select('id, nombre, grado').eq('codigo', codigo).single();
   if (!seccion) { msg.style.color = '#c0392b'; msg.textContent = 'Código no encontrado.'; return; }
 
-  if (seccion.grado !== usuarioActual.grado) {
+  if (normalizarTexto(seccion.grado) !== normalizarTexto(usuarioActual.grado)) {
     msg.style.color = '#c0392b';
     msg.textContent = `Esta clase es para ${seccion.grado}. Tú estás en ${usuarioActual.grado}.`;
     return;
